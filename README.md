@@ -5,3 +5,5 @@ This is literally my third attempt at creating a PlantLink device type for Smart
 
 This attempt calculates the resistance of the soil based on the internal voltage reading from the PlantLink device.  OsoTech very generously provided me with guidance on how to calculate the resistance given this measurement.  The final step will be to calculate the moisture percentage, which the device does not do in its current state yet. 
 
+# License
+I am still working on the licensing on this application. I intend for the license to be as open as allowable, as an MIT or BSD-style with credit to the additional contributors, including but not limited to: Kristopher Kubicki, OsoTech, SmartThings and Stan Dotson
