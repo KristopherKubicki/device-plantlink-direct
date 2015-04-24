@@ -12,10 +12,13 @@ This SmartThings device type removes the need for the PlantLink Hub.  It saves y
 * Pull the batteries from your Link and wait 30 seconds.  Then insert the batteries and hit the only button on the device. 
 * SmartThings should instantly recognize your Plant Link and will report your first measurement within 20 minutes.  
 * When you open the new device for the first time, hit "Preferences"
-<img src='https://cloud.githubusercontent.com/assets/478212/7313692/4f379cf8-ea22-11e4-82fc-bf8569ce6cac.png'>
-* From here you can pick a soil type.  Picking the wrong soil type will give you a completely different reading so try to get close! 
-<img src='https://cloud.githubusercontent.com/assets/478212/7313689/4bdae0b0-ea22-11e4-8c37-f3c41c537440.png'>
-<img src='https://cloud.githubusercontent.com/assets/478212/7313690/4bdc1c8c-ea22-11e4-8021-1c4c27fcfafd.png'>
+
+<img width='320' src='https://cloud.githubusercontent.com/assets/478212/7313692/4f379cf8-ea22-11e4-82fc-bf8569ce6cac.png'>
+
+* From here you can pick a soil type.  Picking the wrong soil type will give you a completely different reading so try to get close!
+
+<img width='320' src='https://cloud.githubusercontent.com/assets/478212/7313689/4bdae0b0-ea22-11e4-8c37-f3c41c537440.png'>
+<img width='320' src='https://cloud.githubusercontent.com/assets/478212/7313690/4bdc1c8c-ea22-11e4-8021-1c4c27fcfafd.png'>
 * That's it, you're done!  Wait 15-20 minutes and you will get your first reading.  Each additional reading will come in every 15 minutes or so until the Link runs out of batteries. 
 
 # Picking Soil
@@ -26,7 +29,8 @@ This device works by calculating the resistance of an electrical current through
 
 If you don't know what kind of soil you have, CSU has this nifty chart:
 
-<img src='https://cloud.githubusercontent.com/assets/478212/7313864/b9795a7e-ea23-11e4-8883-9039b66f8615.jpg'>
+<center><img src='https://cloud.githubusercontent.com/assets/478212/7313864/b9795a7e-ea23-11e4-8883-9039b66f8615.jpg'></center>
+
 Source: <a href='http://www.ext.colostate.edu/mg/gardennotes/214.html'>Colorado Master Gardener Program</a>
 
 # Troubleshooting
@@ -34,6 +38,8 @@ Source: <a href='http://www.ext.colostate.edu/mg/gardennotes/214.html'>Colorado 
 After interacting with Plant Link for some time, there are a few caveats I noticed.  The Plant Links will not mesh with each other, or any other battery powered Zigbee device.  You can use a Zigbee wall switch like a <a href='https://shop.smartthings.com/#!/products/smartpower-outlet'>SmartThings SmartPower</a> to mesh your network.  However, if you put your Links far away from the SmartThings Hub, you will probably have dropped reports from time to time.  
 
 Getting the Links to pair can be tricky if you have already paired the devices with a Hub.  Just keep repeating the process, it will work if you are patient.  
+
+Exposing your Links to excessive water can be a bad thing.  The housing is reasonably water proof, but if you leave it in standing water, particularly with fluctuating temperatures, water will get into the PCB and start to corode the components.  Mine have taken a pretty solid beating, but you will get more life out of your Links if you keep them away from standing water. 
 
 # Notes
 
