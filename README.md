@@ -5,6 +5,8 @@ SmartThings Direct Implementation of the PlantLink Moisture Sensor.   This is an
 
 This SmartThings device type removes the need for the PlantLink Hub.  It saves you money, but you also lose some of the Oso Tech functionality like being able to specify alerts based on your plant type.  This implementation still allows you to get alerts based on your soil type, which is also very important. 
 
+You can set alerts based on Moisture (Dry/Wet) or by a Relative Humidity percentage.  Both are supported by the device capabilities and should be compatible with most SmartApps. 
+
 # Installation
 
 * Open the <a href='https://graph.api.smartthings.com/ide/device/create'>SmartThings Device Types</a> console.  Click "From Code" and paste the <a href='https://github.com/KristopherKubicki/device-plantlink-direct/blob/master/device-type-plantlink-direct.groovy'>device type</a>. 
