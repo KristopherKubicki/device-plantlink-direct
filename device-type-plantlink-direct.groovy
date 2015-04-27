@@ -77,24 +77,19 @@ metadata {
 // Parse incoming device messages to generate events
 def parse(String description) {
 	log.debug "Parse description $description"
-	def map = [:]
+    
+    def result = null
 	if (description?.startsWith("read attr -")) {
 		def descMap = parseDescriptionAsMap(description)
 		if(descMap.cluster == "0B04" && descMap.attrId == "0100") {
-			map.name = "humidity"
-			map.value = calculateHumidity(descMap.value) as Integer
+            result = createEvent(name: "soilType", value: calculateHumidity(descMap.value) as Integer)
 		} else if (descMap.cluster == "0001" && descMap.attrId == "0000") {
-			map.name = "battery"
-			map.value = calculateBattery(descMap.value) as Integer
+            result = createEvent(name: "battery", value: calculateBattery(descMap.value) as Integer)
 		}
 	}
-    
-    sendEvent(name: "soilType", value: settings.soilType)
 
-	def result = null
-	if (map) {
-		result = createEvent(map)
-	}
+    sendEvent(name: "soilType", value: settings.soilType)
+	
 	return result
 }
 
@@ -118,10 +113,10 @@ private calculateHumidity(value) {
     }
     def percent = resistivityToPercent(resistivity)
     
-    percentToWarn(percent * 100)
-    percent = (percent * 100) as Integer
+    def moisturePercent = percentToWarn(percent * 100)
+    moisturePercent = (moisturePercent * 100) as Integer
 
-	percent
+	moisturePercent
 }
 
 // Originally it seemed the battery voltage was a big component of the 
@@ -173,158 +168,193 @@ private resistivityToPercent(resistivity) {
 // 
 private percentToWarn(percent) { 
 
+	def moisturePercent = 0.00
     if(soilType == "Silty Clay") { //
         if(percent > 39.4) { 
         	sendEvent(name: "status", value: "Too Wet")
             sendEvent(name: "water", value: "wet")
+            moisturePercent = 100
         }
         else if(percent < 21.4) { 
         	sendEvent(name: "status", value: "Too Dry")
             sendEvent(name: "water", value: "dry")
+            moisturePercent = 0
         }
 		else {
         	sendEvent(name: "status", value: "OK")
         	sendEvent(name: "water", value: "ok")
+            moisturePercent = (39.4 - percent) / (39.4 - 21.4)
         }
+        
     }
     else if(soilType == "Sandy Clay") { //
     	if(percent > 40) { 
         	sendEvent(name: "status", value: "Too Wet")
             sendEvent(name: "water", value: "wet")
+            moisturePercent = 100
         }
         else if(percent < 32.2) { 
         	sendEvent(name: "status", value: "Too Dry")
             sendEvent(name: "water", value: "dry")
+            moisturePercent = 0
         }
         else {
         	sendEvent(name: "status", value: "OK")
         	sendEvent(name: "water", value: "ok")
+            moisturePercent = (40 - percent) / (40 - 32.2)
         }        
     }
     else if(soilType == "Silty Clay Loam") { //
         if(percent > 44.5) { 
         	sendEvent(name: "status", value: "Too Wet")
             sendEvent(name: "water", value: "wet")
+            moisturePercent = 100
         }
         else if(percent < 32.4) { 
         	sendEvent(name: "status", value: "Too Dry")
             sendEvent(name: "water", value: "dry")
+            moisturePercent = 0
         }
         else {
         	sendEvent(name: "status", value: "OK")
         	sendEvent(name: "water", value: "ok")
+            moisturePercent = (44.5 - percent) / (44.5 - 32.5)
         } 
     }
     else if(soilType == "Clay Loam") {  //
         if(percent > 42) { 
         	sendEvent(name: "status", value: "Too Wet")
             sendEvent(name: "water", value: "wet")
+            moisturePercent = 100
         }
         else if(percent < 31.1) { 
         	sendEvent(name: "status", value: "Too Dry")
             sendEvent(name: "water", value: "dry")
+            moisturePercent = 0
         }
         else {
         	sendEvent(name: "status", value: "OK")
         	sendEvent(name: "water", value: "ok")
+            moisturePercent = (42 - percent) / (42 - 31.1)
         } 
     }
     else if(soilType == "Sandy Clay Loam") { //
         if(percent > 39.5) { 
         	sendEvent(name: "status", value: "Too Wet")
             sendEvent(name: "water", value: "wet")
+            moisturePercent = 100
         }
         else if(percent < 22) { 
         	sendEvent(name: "status", value: "Too Dry")
             sendEvent(name: "water", value: "dry")
+            moisturePercent = 0
         }
         else {
         	sendEvent(name: "status", value: "OK")
         	sendEvent(name: "water", value: "ok")
+            moisturePercent = (39.5 - percent) / (39.5 - 22)
         } 
     }
     else if(soilType == "Silty Loam") { //
         if(percent > 39.5) { 
         	sendEvent(name: "status", value: "Too Wet")
             sendEvent(name: "water", value: "wet")
+            moisturePercent = 100
         }
         else if(percent < 20.1) { 
         	sendEvent(name: "status", value: "Too Dry")
             sendEvent(name: "water", value: "dry")
+            moisturePercent = 0
         }
         else {
         	sendEvent(name: "status", value: "OK")
         	sendEvent(name: "water", value: "ok")
+            moisturePercent = (39.5 - percent) / (39.5 - 20.1)
         } 
     }
     else if(soilType == "Loam") { //
         if(percent > 37) { 
         	sendEvent(name: "status", value: "Too Wet")
             sendEvent(name: "water", value: "wet")
+            moisturePercent = 100
         }
         else if(percent < 23.1) { 
         	sendEvent(name: "status", value: "Too Dry")
             sendEvent(name: "water", value: "dry")
+            moisturePercent = 0
         }
         else {
         	sendEvent(name: "status", value: "OK")
         	sendEvent(name: "water", value: "ok")
+            moisturePercent = (37 - percent) / (37 - 23.1)
         } 
     }
     else if(soilType == "Silt") { //
         if(percent > 39) { 
         	sendEvent(name: "status", value: "Too Wet")
             sendEvent(name: "water", value: "wet")
+            moisturePercent = 100
         }
 		else if(percent < 17.5) { 
         	sendEvent(name: "status", value: "Too Dry")
             sendEvent(name: "water", value: "dry")
+            moisturePercent = 0
         }
         else {
         	sendEvent(name: "status", value: "OK")
         	sendEvent(name: "water", value: "ok")
+            moisturePercent = (39 - percent) / (39 - 17.5)
         } 
     }
     else if(soilType == "Sandy Loam") { // 
-        if(percent > 13) { 
+        if(percent > 31.5) { 
         	sendEvent(name: "status", value: "Too Wet")
             sendEvent(name: "water", value: "wet")
+            moisturePercent = 100
         }
-        else if(percent < 31.5) { 
+        else if(percent < 13) { 
         	sendEvent(name: "status", value: "Too Dry")
             sendEvent(name: "water", value: "dry")
+            moisturePercent = 0
         }
         else {
         	sendEvent(name: "status", value: "OK")
         	sendEvent(name: "water", value: "ok")
+            moisturePercent = (31.5 - percent) / (31.5 - 13)
         } 
     }
     else if(soilType == "Loamy Sand") { //
         if(percent > 29) { 
         	sendEvent(name: "status", value: "Too Wet")
             sendEvent(name: "water", value: "wet")
+            moisturePercent = 100
         }
         else if(percent < 9.6) { 
         	sendEvent(name: "status", value: "Too Dry")
             sendEvent(name: "water", value: "dry")
+            moisturePercent = 0
         }
         else {
         	sendEvent(name: "status", value: "OK")
         	sendEvent(name: "water", value: "ok")
+            moisturePercent = (29 - percent) / (29 - 9.6)
         } 
     }
     else if(soilType == "Sand") { //
         if(percent > 28) { 
         	sendEvent(name: "status", value: "Too Wet")
             sendEvent(name: "water", value: "wet")
+            moisturePercent = 100
         }
         else if(percent < 7.5) { 
         	sendEvent(name: "status", value: "Too Dry")
             sendEvent(name: "water", value: "dry")
+            moisturePercent = 0
         }
         else {
         	sendEvent(name: "status", value: "OK")
         	sendEvent(name: "water", value: "ok")
+            moisturePercent = (28 - percent) / (28 - 7.5)
         } 
     }
 
@@ -335,6 +365,6 @@ private percentToWarn(percent) {
     	sendEvent(name: "status", value: "Waterlogged!")
     } 
 
-
+	moisturePercent
 }
 
