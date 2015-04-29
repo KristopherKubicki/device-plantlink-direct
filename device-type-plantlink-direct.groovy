@@ -232,7 +232,7 @@ private percentToWarn(percent) {
     	sendEvent(name: "status", value: "Too Wet")
     	sendEvent(name: "water", value: "wet")
     }
-    else if(percent <= 5.0) { 
+    else if(percent < 5.0) { 
     	sendEvent(name: "status", value: "No Soil!")
         sendEvent(name: "water", value: "error")
     }
