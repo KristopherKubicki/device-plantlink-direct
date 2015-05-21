@@ -5,7 +5,7 @@
  *    estimate percentage given a soil type.  The device also has a status for triggering alerts
  *
  *	Author: Kristopher Kubicki, d8adrvn, OsoTech, SmartThings
- *	Date: 2015-04-15
+ *	Date: 2015-05-15
  */
 metadata {
 
@@ -210,9 +210,18 @@ private percentToWarn(percent) {
 			moisturePercent = (percent - 7.5) / (28 - 7.5)
     }
     moisturePercent = moisturePercent * 100 as Integer
+    if(moisturePercent < 1) { 
+    	moisturePercent = 0
+    }
+    if(moisturePercent > 50) { 
+    	moisturePercent = 50
+    }
     
-    log.debug "MOISTURE: $moisturePercent"
-    if(waterNeeds == "High" && moisturePercent < 20) { 
+    if(percent < 5.0) { 
+    	sendEvent(name: "status", value: "No Soil!")
+        sendEvent(name: "water", value: "error")
+    }
+    else if(waterNeeds == "High" && moisturePercent < 20) { 
     	sendEvent(name: "status", value: "Too Dry")
     	sendEvent(name: "water", value: "dry")
     }
@@ -232,14 +241,14 @@ private percentToWarn(percent) {
     	sendEvent(name: "status", value: "Too Wet")
     	sendEvent(name: "water", value: "wet")
     }
-    else if(percent < 5.0) { 
-    	sendEvent(name: "status", value: "No Soil!")
-        sendEvent(name: "water", value: "error")
-    }
     else { 
-     log.debug "MOISTURE2: $moisturePercent"
     	sendEvent(name: "status", value: "OK")
     	sendEvent(name: "water", value: "ok")
+    }
+
+//  Attempt to hack the accuracy of the device in the mid ranges down 
+    if(moisturePercent > 5) { 
+    	moisturePercent = moisturePercent % 10
     }
 
 	moisturePercent
