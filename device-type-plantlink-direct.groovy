@@ -246,10 +246,7 @@ private percentToWarn(percent) {
     	sendEvent(name: "water", value: "ok")
     }
 
-//  Attempt to hack the accuracy of the device in the mid ranges down 
-    if(moisturePercent > 5) { 
-    	moisturePercent = moisturePercent % 10
-    }
+
 
 	moisturePercent
 }
