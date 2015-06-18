@@ -5,7 +5,7 @@
  *    estimate percentage given a soil type.  The device also has a status for triggering alerts
  *
  *	Author: Kristopher Kubicki, d8adrvn, OsoTech, SmartThings
- *	Date: 2015-05-15
+ *	Date: 2015-06-18
  */
 metadata {
 
@@ -27,8 +27,8 @@ metadata {
 	}
     
     preferences {
-		input "soilType", "enum", title: "Soil Type", options: ["Sand","Loamy Sand","Sandy Loam","Loam","Silty Loam","Silt","Sandy Clay Loam","Clay Loam","Silty Clay Loam","Silty Clay","Sandy Clay"], required: true, displayDuringSetup: true, defaultValue: "Loam"
-        input "waterNeeds", "enum", title: "Water Needs", options: ["Very Low","Low","Moderate","High"], required: true, displayDuringSetup: true, defaultValue: "Moderate"
+		input "soilType", "enum", title: "Soil Type", options: ["Sand","Loamy Sand","Sandy Loam","Loam","Silty Loam","Silt","Sandy Clay Loam","Clay Loam","Silty Clay Loam","Silty Clay","Sandy Clay"], required: false, displayDuringSetup: true, defaultValue: "Loam"
+        input "waterNeeds", "enum", title: "Water Needs", options: ["Very Low","Low","Moderate","High"], required: false, displayDuringSetup: true, defaultValue: "Moderate"
     }
     
     simulator {
@@ -110,17 +110,22 @@ def parseDescriptionAsMap(description) {
 
 private calculateHumidity(value) {
 	
+    log.debug "HUMID: $value"
     // exponential curve fit to PlantLink data.  Potentially more accurate than Oso's interpretation
     def resistivity = (1500000 * 2.71828 ** (-0.000888 * Integer.parseInt(value, 16))) as Integer
     if(resistivity > 100000) { 
     	sendEvent(name: "resistivity", value: "∞")
+    	sendEvent(name: "status", value: "No Soil!")
+        sendEvent(name: "water", value: "error")
+        return 0
     }
     else { 
 	    sendEvent(name: "resistivity", value: resistivity)
     }
+    
     def percent = resistivityToPercent(resistivity)
     
-    def moisturePercent = percentToWarn(percent * 100)
+    def moisturePercent = percentToWarn(percent)
 
 	moisturePercent
 }
@@ -146,6 +151,8 @@ private calculateBattery(value) {
 // Calculated by hand.  This was real hard
 private resistivityToPercent(resistivity) { 
 
+//log.debug "RESIST: $resistivity"
+
 	def percent = 0.00
     if(resistivity == 0) { 
     	return percent
@@ -163,8 +170,7 @@ private resistivityToPercent(resistivity) {
     if(percent < 0) { 
     	percent = 0
     }
- 
- //	percent = percent * 100
+ 	percent = percent * 100
     
 	return percent
 }
@@ -174,7 +180,7 @@ private resistivityToPercent(resistivity) {
 // 
 private percentToWarn(percent) { 
 
-	    log.debug "PERCENT: $percent"
+//	    log.debug "PERCENT: $percent"
 	def moisturePercent = 0.00
     if(soilType == "Silty Clay") { 
             moisturePercent = (percent - 21.4) / (39.4 - 21.4)
@@ -194,7 +200,7 @@ private percentToWarn(percent) {
     else if(soilType == "Silty Loam") { 
             moisturePercent = (percent - 20.1) / (39.5 - 20.1)
     }
-    else if(soilType == "Loam") { 
+    else if(soilType == "Loam" || soilType == "") { 
             moisturePercent = (percent - 23.1) / (37 - 23.1)
     }
     else if(soilType == "Silt") { 
@@ -213,15 +219,11 @@ private percentToWarn(percent) {
     if(moisturePercent < 1) { 
     	moisturePercent = 0
     }
-    if(moisturePercent > 50) { 
-    	moisturePercent = 50
+    if(moisturePercent > 80) { 
+    	moisturePercent = 80
     }
     
-    if(percent < 5.0) { 
-    	sendEvent(name: "status", value: "No Soil!")
-        sendEvent(name: "water", value: "error")
-    }
-    else if(waterNeeds == "High" && moisturePercent < 20) { 
+   if(waterNeeds == "High" && moisturePercent < 20) { 
     	sendEvent(name: "status", value: "Too Dry")
     	sendEvent(name: "water", value: "dry")
     }
@@ -237,7 +239,7 @@ private percentToWarn(percent) {
     	sendEvent(name: "status", value: "Too Dry")
     	sendEvent(name: "water", value: "dry")
     }
-    else if(moisturePercent > 90) { 
+    else if(moisturePercent > 50) { 
     	sendEvent(name: "status", value: "Too Wet")
     	sendEvent(name: "water", value: "wet")
     }
@@ -245,8 +247,7 @@ private percentToWarn(percent) {
     	sendEvent(name: "status", value: "OK")
     	sendEvent(name: "water", value: "ok")
     }
-
-
+//log.debug "MPERCENT: $moisturePercent"
 
 	moisturePercent
 }
