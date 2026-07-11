@@ -1,4 +1,7 @@
 # PlantLink Direct Device
+
+> **Legacy note:** This is an older SmartThings/Hubitat-era integration. It remains public for people maintaining classic Groovy SmartApps and device handlers, but it is not actively maintained for the current SmartThings platform.
+
 SmartThings Direct Implementation of the PlantLink Moisture Sensor.   This is an "offline" implementation of Oso Tech's <a href='http://myplantlink.com/check-out-page/'>PlantLink device</a>.  This is a very affordable dynamic range Zigbee moisture sensor that only costs $30.  The battery life is excellent, the durability is fairly good -- just don't waterlog them for too long or leave them outside in the winter.  
 
 <img src='https://cloud.githubusercontent.com/assets/478212/7313447/f4745eee-ea1e-11e4-8027-0a08c809019b.jpg'>
